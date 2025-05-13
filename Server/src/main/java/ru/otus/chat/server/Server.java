@@ -1,6 +1,5 @@
 package ru.otus.chat.server;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,14 +32,22 @@ public class Server {
     }
 
     public void unsubscribe(ClientHandler clientHandler) {
-        broadcastMessage("Клиент " + clientHandler.getUsername() + " вышел из чата");
-        System.out.println("Клиент " + clientHandler.getUsername() + " вышел из чата");
+        broadcastMessage("Клиент " + clientHandler.getUserName() + " вышел из чата");
+        System.out.println("Клиент " + clientHandler.getUserName() + " вышел из чата");
         clients.remove(clientHandler);
     }
 
     public void broadcastMessage(String message) {
         for (ClientHandler c : clients) {
             c.sendMsg(message);
+        }
+    }
+
+    public void sendMessageToSelectedUser (String selectedUser, String message) {
+        for (ClientHandler c : clients) {
+            if (c.getUserName().equals(selectedUser)) {
+                c.sendMsg(selectedUser + " написал вам: " + message);
+            }
         }
     }
 }

@@ -29,11 +29,13 @@ public class ClientHandler {
                 while (true) {
                     String message = in.readUTF();
                     if (message.startsWith("/")) {
-                        if (message.equals("/exit")) {
+                        if (message.startsWith("/w")) {
+                            server.sendMessageToSelectedUser(extractUserName(message), extractMessage(message));
+                        }
+                        else if (message.equals("/exit")) {
                             sendMsg("/exitok");
                             break;
                         }
-
                     } else {
                         server.broadcastMessage(username + ": " + message);
                     }
@@ -46,6 +48,16 @@ public class ClientHandler {
         }).start();
     }
 
+    public String extractMessage(String message) {
+        String[] messageParts = message.split(" ", 3);
+        return messageParts[2];
+    }
+
+    public String extractUserName(String message) {
+        String[] messageParts = message.split(" ", 3);
+        return messageParts[1];
+    }
+
     public void sendMsg(String message) {
         try {
             out.writeUTF(message);
@@ -54,7 +66,7 @@ public class ClientHandler {
         }
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return username;
     }
 
