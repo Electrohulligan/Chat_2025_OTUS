@@ -42,12 +42,4 @@ public class Server {
             c.sendMsg(message);
         }
     }
-
-    public void sendMessageToSelectedUser (String selectedUser, String message) {
-        for (ClientHandler c : clients) {
-            if (c.getUserName().equals(selectedUser)) {
-                c.sendMsg(selectedUser + " написал вам: " + message);
-            }
-        }
-    }
 }
