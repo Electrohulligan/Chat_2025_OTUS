@@ -12,6 +12,7 @@ public class ClientHandler {
     private DataOutputStream out;
 
     private String username;
+    private boolean authenticated;
 
     public ClientHandler(Socket socket, Server server) throws IOException {
         this.socket = socket;
@@ -19,14 +20,51 @@ public class ClientHandler {
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
 
-        username = "user" + socket.getPort();
-        sendMsg("Вы подключились под ником: " + username);
-
         new Thread(() -> {
             try {
                 System.out.println("Клиент подключился " + socket.getPort());
-
+                //Цикл аутентификации
                 while (true) {
+                    sendMsg("Перед работой с чатом необходимо выполнить " +
+                            "аутентификацию '/auth login password' \n" +
+                            "или регистрацию '/reg login password username'");
+                    String message = in.readUTF();
+                    if (message.startsWith("/")) {
+                        if (message.equals("/exit")) {
+                            sendMsg("/exitok");
+                            break;
+                        }
+                        ///auth login password
+                        if (message.startsWith("/auth ")) {
+                            String token[] = message.split(" ");
+                            if (token.length != 3) {
+                                sendMsg("Неверный формат команды /auth");
+                                continue;
+                            }
+                            if (server.getAuthenticatedProvider()
+                                    .authenticate(this, token[1], token[2])) {
+                                authenticated = true;
+                                break;
+                            }
+                        }
+                        ///reg login password username
+                        if (message.startsWith("/reg ")) {
+                            String token[] = message.split(" ");
+                            if (token.length != 4) {
+                                sendMsg("Неверный формат команды /reg");
+                                continue;
+                            }
+                            if (server.getAuthenticatedProvider()
+                                    .registration(this, token[1], token[2], token[3])) {
+                                authenticated = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //Цикл работы
+                while (authenticated) {
                     String message = in.readUTF();
                     if (message.startsWith("/")) {
                         if (message.equals("/exit")) {
@@ -53,7 +91,7 @@ public class ClientHandler {
         }
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
