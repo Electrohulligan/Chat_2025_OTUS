@@ -1,6 +1,5 @@
 package ru.otus.chat.client;
 
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -27,6 +26,20 @@ public class Client {
                         if (message.startsWith("/")) {
                             if (message.equals("/exitok")) {
                                 break;
+                            }
+                            if (message.startsWith("/authok ")) {
+                                System.out.println("Вы подключились под ником: " + message.split(" ")[1]);
+                                continue;
+                            }
+                            if (message.startsWith("/regok ")) {
+                                System.out.println("Вы успешно зарегистрировались и подключились под ником: "
+                                        + message.split(" ")[1]);
+                                continue;
+                            }
+                            if (message.startsWith("/kick ")) {
+                                System.out.println("Сообщение об удалении");
+//                                System.out.println(message);
+                                continue;
                             }
                         }
                         System.out.println(message);
