@@ -36,6 +36,11 @@ public class Client {
                                         + message.split(" ")[1]);
                                 continue;
                             }
+                            if (message.startsWith("/kick ")) {
+                                System.out.println("Сообщение об удалении");
+//                                System.out.println(message);
+                                continue;
+                            }
                         }
                         System.out.println(message);
                     }
@@ -53,6 +58,7 @@ public class Client {
                     break;
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

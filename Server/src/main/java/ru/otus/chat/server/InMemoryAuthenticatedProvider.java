@@ -70,6 +70,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
             clientHandler.sendMsg("Указанная учетная запись уже занята");
             return false;
         }
+
         clientHandler.setUsername(authUsername);
         server.subscribe(clientHandler);
         clientHandler.sendMsg("/authok " + authUsername);
@@ -98,6 +99,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
             clientHandler.sendMsg("Такое имя пользователя уже занято");
             return false;
         }
+
         users.add(new User(login, password, username));
         clientHandler.setUsername(username);
         server.subscribe(clientHandler);

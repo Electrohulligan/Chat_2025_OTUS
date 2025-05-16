@@ -28,13 +28,14 @@ public class ClientHandler {
                     sendMsg("Перед работой с чатом необходимо выполнить " +
                             "аутентификацию '/auth login password' \n" +
                             "или регистрацию '/reg login password username'");
+
                     String message = in.readUTF();
                     if (message.startsWith("/")) {
                         if (message.equals("/exit")) {
                             sendMsg("/exitok");
                             break;
                         }
-                        ///auth login password
+                        //auth login password
                         if (message.startsWith("/auth ")) {
                             String token[] = message.split(" ");
                             if (token.length != 3) {
@@ -47,7 +48,7 @@ public class ClientHandler {
                                 break;
                             }
                         }
-                        ///reg login password username
+                        //reg login password username
                         if (message.startsWith("/reg ")) {
                             String token[] = message.split(" ");
                             if (token.length != 4) {
@@ -60,6 +61,20 @@ public class ClientHandler {
                                 break;
                             }
                         }
+                        //remove
+                        if (message.startsWith("/kick ")) {
+                            authenticated = true;
+//                            String token[] = message.split(" ");
+//                            if (token.length != 2) {
+                                sendMsg("/kick просто формат команды удаления /kick");
+                                break;
+//                                continue;
+//                            }
+//                            if (true) {
+//                                sendMsg("окончательная проверка удаления");
+//                                break;
+//                            }
+                        }
                     }
                 }
 
@@ -71,6 +86,7 @@ public class ClientHandler {
                             sendMsg("/exitok");
                             break;
                         }
+
                     } else {
                         server.broadcastMessage(username + ": " + message);
                     }
