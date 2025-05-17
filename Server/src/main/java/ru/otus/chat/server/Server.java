@@ -39,6 +39,12 @@ public class Server {
         clients.remove(clientHandler);
     }
 
+    public void unsubscribeByAdmin(ClientHandler clientHandler) {
+        broadcastMessage("Клиент " + clientHandler.getUsername() + " удалён из чата администратором");
+        System.out.println("Клиент " + clientHandler.getUsername() + " удалён из чата");
+        clients.remove(clientHandler);
+    }
+
     public void broadcastMessage(String message) {
         for (ClientHandler c : clients) {
             c.sendMsg(message);
@@ -56,5 +62,23 @@ public class Server {
 
     public AuthenticatedProvider getAuthenticatedProvider() {
         return authenticatedProvider;
+    }
+
+    public boolean isClientHandlerConnected(String username) {
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ClientHandler getClientHandler(String username) {
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(username)) {
+                return c;
+            }
+        }
+        return null;
     }
 }

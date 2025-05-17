@@ -8,11 +8,13 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
         private String login;
         private String password;
         private String username;
+        private final String role;
 
-        public User(String login, String password, String username) {
+        public User(String login, String password, String username, String role) {
             this.login = login;
             this.password = password;
             this.username = username;
+            this.role = role;
         }
     }
 
@@ -22,9 +24,10 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
     public InMemoryAuthenticatedProvider(Server server) {
         this.server = server;
         this.users = new CopyOnWriteArrayList<>();
-        this.users.add(new User("qwe", "qwe", "qwe1"));
-        this.users.add(new User("asd", "asd", "asd1"));
-        this.users.add(new User("zxc", "zxc", "zxc1"));
+        this.users.add(new User("admin", "admin", "admin1", "admin"));
+        this.users.add(new User("qwe", "qwe", "qwe1", "user"));
+        this.users.add(new User("asd", "asd", "asd1", "user"));
+        this.users.add(new User("zxc", "zxc", "zxc1", "user"));
     }
 
     @Override
@@ -77,7 +80,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
     }
 
     @Override
-    public boolean registration(ClientHandler clientHandler, String login, String password, String username) {
+    public boolean registration(ClientHandler clientHandler, String login, String password, String username, String role) {
         if (login.length() < 3) {
             clientHandler.sendMsg("Логин должен быть 3+ символа");
             return false;
@@ -98,10 +101,18 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
             clientHandler.sendMsg("Такое имя пользователя уже занято");
             return false;
         }
-        users.add(new User(login, password, username));
+        users.add(new User(login, password, username, role));
         clientHandler.setUsername(username);
         server.subscribe(clientHandler);
         clientHandler.sendMsg("/regok " + username);
         return true;
     }
+    public String getUserRole(String username) {
+        for (User user : users) {
+            if (user.username.equalsIgnoreCase(username)) {
+                return user.role;
+            }
+        } return null;
+    }
+
 }

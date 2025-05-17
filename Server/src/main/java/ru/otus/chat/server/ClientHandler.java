@@ -55,7 +55,7 @@ public class ClientHandler {
                                 continue;
                             }
                             if (server.getAuthenticatedProvider()
-                                    .registration(this, token[1], token[2], token[3])) {
+                                    .registration(this, token[1], token[2], token[3], "user")) {
                                 authenticated = true;
                                 break;
                             }
@@ -70,6 +70,20 @@ public class ClientHandler {
                         if (message.equals("/exit")) {
                             sendMsg("/exitok");
                             break;
+                        }
+                        if (message.startsWith("/kick ")) {
+                            String token[] = message.split(" ");
+                            if (token.length != 2) {
+                                sendMsg("Неверный формат команды /kick");
+                                continue;
+                            }
+                            if (!server.getAuthenticatedProvider().getUserRole(username).equals("admin")) {
+                                sendMsg("Вы не обладаете правами администратора для удаления участников чата");
+                            } else if (server.isClientHandlerConnected(token[1])) {
+                                server.unsubscribeByAdmin(server.getClientHandler(token[1]));
+                            } else {
+                                sendMsg("Данный пользователь не подключен к сети");
+                            }
                         }
                     } else {
                         server.broadcastMessage(username + ": " + message);
